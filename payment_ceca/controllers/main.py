@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-
 import logging
 import pprint
 import werkzeug
@@ -16,4 +15,4 @@ class PaymentTransacionCecaController(http.Controller):
     def payment_transaction_ceca_action_run(self, **post):
         _logger.info('payment_transaction_ceca_action_run (controller)')
         request.env['payment.transaction'].sudo().cron_sqs_ceca_action_run()
-        return request.render('website.404')
+        return request.render('website.404')    
