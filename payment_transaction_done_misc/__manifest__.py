@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Payment transaction Done sale order send customer mail',
+    'name': 'Payment transaction Done misc',
     'version': '10.0.1.0.0',    
     'author': 'Odoo Nodriza Tech (ONT)',
     'website': 'https://nodrizatech.com/',
