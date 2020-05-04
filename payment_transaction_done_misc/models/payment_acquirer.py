@@ -27,6 +27,6 @@ class PaymentAcquirer(models.Model):
     done_account_journal_id_account_payment_method = fields.Many2one(
         comodel_name='account.payment.method',
         domain=[('payment_type', '=', 'inbound')],
-        string='Metodo pago (account.payment)',
+        string='Metodo pago (account.payment.method)',
         help='Metodo de pago usado en el account.payment'
     )
