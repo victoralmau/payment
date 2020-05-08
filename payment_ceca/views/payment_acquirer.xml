@@ -23,13 +23,9 @@
         <field name="model">payment.transaction</field>
         <field name="inherit_id" ref="payment.transaction_form"/>
         <field name="arch" type="xml">
-            <xpath expr='//notebook' position='inside'>
-                <page string="Ceca TX Details">
-                    <group>
-                        <field name="ceca_txnid"/>
-                    </group>
-                </page>
-            </xpath>
+            <field name="date" position="after">
+                <field name="ceca_txnid"/>
+            </field>            
         </field>
     </record>
 </odoo>
