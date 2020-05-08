@@ -7,7 +7,7 @@ from odoo import models, fields, api, tools
 import logging
 _logger = logging.getLogger(__name__)
 
-class AcquirerCeca(models.Model):
+class PaymentAcquirer(models.Model):
     _inherit = 'payment.acquirer'
 
     def _get_ceca_urls(self, environment):
