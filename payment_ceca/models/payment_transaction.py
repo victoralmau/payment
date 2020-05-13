@@ -147,7 +147,7 @@ class PaymentTransaction(models.Model):
     @api.model
     def form_feedback(self, data, acquirer_name):
         _logger.info('form_feedback')
-        res = super(TxCeca, self).form_feedback(data, acquirer_name)
+        res = super(PaymentTransaction, self).form_feedback(data, acquirer_name)
         try:
             tx_find_method_name = '_%s_form_get_tx_from_data' % acquirer_name
             if hasattr(self, tx_find_method_name):
