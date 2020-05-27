@@ -279,20 +279,23 @@ class PaymentTransaction(models.Model):
                             }
                             result_message['data'] = payment_transaction_vals
                             _logger.info(result_message)
-                            #update
+                            #payment_transaction_id (first)
                             payment_transaction_id = payment_transaction_ids[0]
-                            payment_transaction_id.write(payment_transaction_vals)
                             #borraremos todos en borrador que quedaran
-                            payment_transaction_ids = self.env['payment.transaction'].sudo().search(
+                            payment_transaction_ids_need_remove = self.env['payment.transaction'].sudo().search(
                                 [
+                                    ('id', '!=', payment_transaction_id.id),
                                     ('state', '=', 'draft'),
                                     ('reference', '=', str(reference)),
                                     ('acquirer_id.provider', '=', 'ceca'),
                                 ]
                             )
-                            if len(payment_transaction_ids)>0:
-                                for payment_transaction_id in payment_transaction_ids:
-                                    payment_transaction_id.unlink()                        
+                            if len(payment_transaction_ids_need_remove)>0:
+                                for payment_transaction_id_need_remove in payment_transaction_ids_need_remove:
+                                    #payment_transaction_id_need_remove.unlink()
+                                    super(PaymentTransaction, payment_transaction_id_need_remove).unlink()
+                            #update
+                            payment_transaction_id.write(payment_transaction_vals)
                         # remove_message
                         if result_message['statusCode'] == 200:
                             response_delete_message = sqs.delete_message(
