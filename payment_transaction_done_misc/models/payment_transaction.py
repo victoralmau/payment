@@ -41,13 +41,18 @@ class PaymentTransaction(models.Model):
                     mail_compose_message_obj.subject = return_mail_compose_message_obj['value']['subject']                  
                     #send_mail_action
                     mail_compose_message_obj.send_mail_action()
-            #done_sale_order_user_id_note                    
-            if self.acquirer_id.done_sale_order_user_id_note==True:
+            #done_sale_order_user_id_mail_template_id
+            if self.acquirer_id.done_sale_order_user_id_mail_template_id.id>0:
                 if self.sale_order_id.id>0:
+                    mail_compose_message_obj = self.env['mail.compose.message'].sudo().create({})
+                    # onchange_template_id
+                    return_mail_compose_message_obj = mail_compose_message_obj.onchange_template_id(self.acquirer_id.done_sale_order_user_id_mail_template_id.id, 'comment', 'payment.transaction', self.id)
+                    mail_body = return_mail_compose_message_obj['value']['body']
+                    #create
                     mail_message_vals = {
                         'subtype_id': 2,
                         'message_type': 'notification',
-                        'body': 'Pago confirmado por un importe de '+str(self.amount)+str(self.currency_id.symbol)+ ' desde '+str(self.acquirer_id.name),
+                        'body': mail_body,
                         'model': 'sale.order',
                         'res_id': self.sale_order_id.id,
                         'record_name': self.sale_order_id.name                                                                        

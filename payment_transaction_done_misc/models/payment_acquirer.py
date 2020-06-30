@@ -14,8 +14,9 @@ class PaymentAcquirer(models.Model):
         string='Plantilla email cliente',
         help='Email que se enviara al cliente cuando la transaccion se complete y este vinculada con un pedido de venta'
     )
-    done_sale_order_user_id_note = fields.Boolean(
-        default=False,
+    done_sale_order_user_id_mail_template_id = fields.Many2one(
+        comodel_name='mail.template',
+        domain=[('model_id.model', '=', 'payment.transaction')],
         string='Notificacion al comercial',
         help='Crea una nota interna en el pedido al comercial'
     )
