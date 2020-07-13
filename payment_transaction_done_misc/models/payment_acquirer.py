@@ -9,23 +9,23 @@ class PaymentAcquirer(models.Model):
     done_sale_order_customer_mail_template_id = fields.Many2one(
         comodel_name='mail.template',
         domain=[('model_id.model', '=', 'payment.transaction')],
-        string='Plantilla email cliente',
-        help='Email que se enviara al cliente cuando la transaccion se complete y este vinculada con un pedido de venta'
+        string='Mail template from custom',
+        help='Email that will be sent to the customer when the transaction is completed and linked to a sales order'
     )
     done_sale_order_user_id_mail_template_id = fields.Many2one(
         comodel_name='mail.template',
         domain=[('model_id.model', '=', 'payment.transaction')],
-        string='Notificacion al comercial',
-        help='Crea una nota interna en el pedido al comercial'
+        string='Mail template from user_id',
+        help='Create an internal note related to user_id from sale_order'
     )
     done_account_journal_id_account_payment = fields.Many2one(
         comodel_name='account.journal',
-        string='Diario pagos',
-        help='Diario de pago contra el que se crearan los pagos de las transacciones hechas'
+        string='Account journal',
+        help='Account journal used to create payments from transactions done'
     )
     done_account_journal_id_account_payment_method = fields.Many2one(
         comodel_name='account.payment.method',
         domain=[('payment_type', '=', 'inbound')],
-        string='Metodo pago (account.payment.method)',
-        help='Metodo de pago usado en el account.payment'
+        string='Payment method',
+        help='Payment method used in payment'
     )
