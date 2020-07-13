@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-from odoo import api, models, fields
-from odoo.exceptions import Warning, ValidationError
 
-import logging
-_logger = logging.getLogger(__name__)
+from odoo import api, models, fields
+
 
 class PaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
@@ -32,7 +29,7 @@ class PaymentTransaction(models.Model):
                     #onchange_template_id
                     return_mail_compose_message_obj = mail_compose_message_obj.onchange_template_id(self.acquirer_id.done_sale_order_customer_mail_template_id.id, 'comment', 'payment.transaction', self.id)
                     mail_body = return_mail_compose_message_obj['value']['body']                                            
-                    #update                                    
+                    #update
                     mail_compose_message_obj.composition_mode = 'comment'
                     mail_compose_message_obj.model = 'sale.order'
                     mail_compose_message_obj.res_id = sale_order_id.id

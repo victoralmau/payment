@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="payment_transaction_done_misc_acquirer_form" model="ir.ui.view">
-        <field name="name">payment_transaction_done_misc_acquirer_form</field>
+
+    <record id="payment_acquirer_done_misc_form" model="ir.ui.view">
+        <field name="name">payment.acquirer.done.misc.form</field>
         <field name="model">payment.acquirer</field>
         <field name="inherit_id" ref="payment.acquirer_form" />
         <field name="priority" eval="20"/>                
@@ -15,5 +16,6 @@
                 </group>
             </field>                                                            
         </field>
-    </record>    
+    </record>
+
 </odoo>
