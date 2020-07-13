@@ -15,7 +15,7 @@
     "data": [
         "data/ir_cron.xml",
         "views/ceca.xml",
-        "views/payment_acquirer.xml",
+        "views/payment_acquirer_view.xml",
         "data/payment_ceca.xml"
     ],
     "installable": True,
