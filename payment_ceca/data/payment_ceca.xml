@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
+
         <record id="payment_acquirer_ceca" model="payment.acquirer">
             <field name="name">Ceca</field>
             <field name="provider">ceca</field>
@@ -15,5 +16,6 @@
             <field name="ceca_exponente">2</field>
             <field name="ceca_tipo_moneda">978</field>        
         </record>
+
     </data>
 </odoo>

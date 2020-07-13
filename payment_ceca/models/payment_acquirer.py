@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 import hashlib
 from datetime import datetime
@@ -49,7 +48,7 @@ class PaymentAcquirer(models.Model):
         Exponente = str(self.ceca_exponente)
         TipoMoneda = str(self.ceca_tipo_moneda)        
         #url_ok = str(base_url)+'/payment/ceca/ok'
-        #url_nok = str(base_url)+'/payment/ceca/ko'        
+        #url_nok = str(base_url)+'/payment/ceca/ko'
         url_ok = str(base_url)+values['return_url']+'?payment_ok=1'
         url_nok = str(base_url)+values['return_url']+'?payment_ko=1'
         Num_operacion = values['reference']
