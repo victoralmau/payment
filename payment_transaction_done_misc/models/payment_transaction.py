@@ -6,8 +6,9 @@ from odoo import api, models, fields
 class PaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
     
-    @api.one
-    def write(self, vals):        
+    @api.multi
+    def write(self, vals):
+        self.ensure_one()
         #state_done_now
         state_done_now = False
         if 'state' in vals:
