@@ -39,7 +39,7 @@ class PaymentAcquirer(models.Model):
     def ceca_form_generate_values(self, values):
         self.ensure_one()
         ceca_values = dict(values)                        
-        #vars
+        # vars
         base_url = self._get_website_url()                        
         urltpv = self._get_ceca_urls(self.environment)['ceca_form_url']
         MerchantID = str(self.ceca_merchant_id)
@@ -47,36 +47,48 @@ class PaymentAcquirer(models.Model):
         TerminalID = str(self.ceca_terminal_id)
         Exponente = str(self.ceca_exponente)
         TipoMoneda = str(self.ceca_tipo_moneda)        
-        #url_ok = str(base_url)+'/payment/ceca/ok'
-        #url_nok = str(base_url)+'/payment/ceca/ko'
+        # url_ok = str(base_url)+'/payment/ceca/ok'
+        # url_nok = str(base_url)+'/payment/ceca/ko'
         url_ok = str(base_url)+values['return_url']+'?payment_ok=1'
         url_nok = str(base_url)+values['return_url']+'?payment_ko=1'
         Num_operacion = values['reference']
-        #importe
+        # importe
         amount_split = str(values['amount']).split('.')
         Importe = str(amount_split[0])+str(amount_split[1])
-        #Fix ad 0 final
-        if len(amount_split[1])==1:
+        # Fix ad 0 final
+        if len(amount_split[1]) == 1:
             Importe = str(Importe)+'0'        
-        #others
+        # others
         Idioma = 1
         Pago_soportado = 'SSL'
         Cifrado = 'SHA2'
-        #get_order_id
-        if Num_operacion=='/':        
+        # get_order_id
+        if Num_operacion == '/':
             return_url = str(values['return_url'])
             return_url = return_url.replace('/quote/', '')            
             return_url_split = return_url.split('/')
             
             sale_order_ids = self.env['sale.order'].search([('id', '=', str(return_url_split[0]))])
-            if len(sale_order_ids)>0:
+            if sale_order_ids:
                 sale_order_id = sale_order_ids[0]
                 Num_operacion = sale_order_id.name
-        #Num_operacion
+        # Num_operacion
         Num_operacion += '-'+str(datetime.today().strftime("%H_%I_%S"))                                        
-        #clave
+        # clave
         Clave = str(self.ceca_encriptation_key)
-        string_to_sign = str(Clave)+str(MerchantID)+str(AcquirerBIN)+str(TerminalID)+str(Num_operacion)+str(Importe)+str(TipoMoneda)+str(Exponente)+str(Cifrado)+str(url_ok)+str(url_nok)
+        string_to_sign = '%s%s%s%s%s%s%s%s%s%s%s' % (
+            Clave,
+            MerchantID,
+            AcquirerBIN,
+            TerminalID,
+            Num_operacion,
+            Importe,
+            TipoMoneda,
+            Exponente,
+            Cifrado,
+            url_ok,
+            url_nok
+        )
         Firma = hashlib.sha256(string_to_sign.encode()).hexdigest()                
 
         ceca_values.update({

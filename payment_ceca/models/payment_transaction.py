@@ -239,7 +239,7 @@ class PaymentTransaction(models.Model):
                         if field_need_check not in message_body:
                             result_message['statusCode'] = 500
                             result_message['return_body'] = {'error': 'No existe el campo ' + str(field_need_check)}
-                            #action_payment_transaction_done_error
+                            # action_payment_transaction_done_error
                             super(PaymentTransaction, self).action_payment_transaction_done_error({
                                 'error': result_message['return_body']['error'],
                                 'reference': str(reference),
@@ -260,16 +260,7 @@ class PaymentTransaction(models.Model):
                                 ('acquirer_id.provider', '=', 'ceca'),
                             ], order="id desc"
                         )
-                        if len(payment_transaction_ids)==0:
-                            result_message['statusCode'] = 500
-                            result_message['return_body'] = {'error': 'RARO - NO HAY NINGUN PAYMENT_TRANSACTION con esa referencia, ¿No estara ya validado?'}
-                            #action_payment_transaction_done_error
-                            super(PaymentTransaction, self).action_payment_transaction_done_error({
-                                'error': result_message['return_body']['error'],
-                                'reference': str(reference),
-                                'acquirer_id_name': 'Ceca',
-                            })
-                        elif len(payment_transaction_ids)>0:
+                        if payment_transaction_ids:
                             #continue operations                        
                             payment_transaction_vals = {
                                 'state': 'done',
@@ -282,7 +273,7 @@ class PaymentTransaction(models.Model):
                             # payment_transaction_id (first)
                             payment_transaction_id = payment_transaction_ids[0]
                             payment_transaction_id.write(payment_transaction_vals)
-                            #borraremos todos en borrador que quedaran
+                            # borraremos todos en borrador que quedaran
                             payment_transaction_ids_need_remove = self.env['payment.transaction'].sudo().search(
                                 [
                                     ('state', '=', 'draft'),
@@ -290,12 +281,23 @@ class PaymentTransaction(models.Model):
                                     ('acquirer_id.provider', '=', 'ceca'),
                                 ]
                             )
-                            if len(payment_transaction_ids_need_remove)>0:
+                            if payment_transaction_ids_need_remove:
                                 for payment_transaction_id_need_remove in payment_transaction_ids_need_remove:
                                     # payment_transaction_id_need_remove.unlink()
                                     super(PaymentTransaction, payment_transaction_id_need_remove).unlink()
                             # update
                             payment_transaction_id.write(payment_transaction_vals)
+                        else:
+                            result_message['statusCode'] = 500
+                            result_message['return_body'] = {
+                                'error': 'RARO - NO HAY NINGUN PAYMENT_TRANSACTION con esa referencia, ¿No estara ya validado?'
+                            }
+                            # action_payment_transaction_done_error
+                            super(PaymentTransaction, self).action_payment_transaction_done_error({
+                                'error': result_message['return_body']['error'],
+                                'reference': str(reference),
+                                'acquirer_id_name': 'Ceca',
+                            })
                         # remove_message
                         if result_message['statusCode'] == 200:
                             response_delete_message = sqs.delete_message(
