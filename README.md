@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/OdooNodrizaTech/payment.svg?branch=12.0)](https://travis-ci.org/OdooNodrizaTech/payment)
-[![Coverage Status](https://coveralls.io/repos/OdooNodrizaTech/payment/badge.svg?branch=12.0)](https://coveralls.io/r/OdooNodrizaTech/payment?branch=12.0)
 
 payment
 =========
