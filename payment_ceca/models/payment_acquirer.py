@@ -61,7 +61,6 @@ class PaymentAcquirer(models.Model):
 
     @api.multi
     def ceca_form_generate_values(self, values):
-        self.ensure_one()
         ceca_values = dict(values)
         # vars
         base_url = self._get_website_url()
@@ -147,5 +146,4 @@ class PaymentAcquirer(models.Model):
 
     @api.multi
     def action_confirm_amount(self):
-        self.ensure_one()
         _logger.info('action_confirm_amount')
