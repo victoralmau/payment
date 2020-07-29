@@ -2,7 +2,7 @@
 
 payment
 =========
-Módulos relacionados con Payment
+Addons related with Payment
 
 
 Addons
