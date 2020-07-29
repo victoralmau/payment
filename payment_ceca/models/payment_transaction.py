@@ -50,15 +50,14 @@ class PaymentTransaction(models.Model):
         test_env = http.request.session.get('test_enable', False)
         if not reference or not pay_id or not shasign:
             if not test_env:
-                error_msg = _('Ceca: received data with missing reference (%s) '
-                              'or pay_id (%s) or shashign (%s)') \
-                            % (
-                                reference,
-                                pay_id,
-                                shasign
-                            )
-                _logger.info(error_msg)
-                raise ValidationError(error_msg)
+                msg = _('Ceca: received data with reference (%s), pay_id (%s), shashign (%s)') \
+                      % (
+                          reference,
+                          pay_id,
+                          shasign
+                      )
+                _logger.info(msg)
+                raise ValidationError(msg)
             http.OpenERPSession.tx_error = True
         tx = self.search([('reference', '=', reference)])
         if not tx or len(tx) > 1:
@@ -96,15 +95,13 @@ class PaymentTransaction(models.Model):
         invalid_parameters = []
         test_env = http.request.session.get('test_enable', False)
         parameters_dic = self.merchant_params_json2dict(data)
-        if (self.acquirer_reference
-            and parameters_dic.get('Ds_Order')) != self.acquirer_reference:
-            invalid_parameters.append(
-                (
+        if self.acquirer_reference and parameters_dic.get('Ds_Order'):
+            if parameters_dic.get('Ds_Order') != self.acquirer_reference:
+                invalid_parameters.append(
                     'Transaction Id',
                     parameters_dic.get('Ds_Order'),
                     self.acquirer_reference
                 )
-            )
         # check what is buyed
         if (
                 float_compare(
@@ -234,7 +231,7 @@ class PaymentTransaction(models.Model):
         AWS_ACCESS_KEY_ID = tools.config.get('aws_access_key_id')
         AWS_SECRET_ACCESS_KEY = tools.config.get('aws_secret_key_id')
         AWS_SMS_REGION_NAME = tools.config.get('aws_region_name')
-        #define
+        # define
         current_date = datetime.now(pytz.timezone('Europe/Madrid'))
         # boto3
         sqs = boto3.client(
@@ -279,11 +276,11 @@ class PaymentTransaction(models.Model):
                                 'error': 'No existe el campo %s' % field_need_check
                             }
                             # action_payment_transaction_done_error
-                            super(PaymentTransaction, self).action_payment_transaction_done_error({
-                                'error': result_message['return_body']['error'],
-                                'reference': str(reference),
-                                'acquirer_id_name': 'Ceca',
-                            })
+                            super(PaymentTransaction, self).\
+                                action_payment_transaction_done_error({
+                                    'error': result_message['return_body']['error'],
+                                    'acquirer_id_name': 'Ceca',
+                                })
                     # operations
                     if result_message['statusCode'] == 200:
                         # amount
@@ -306,7 +303,8 @@ class PaymentTransaction(models.Model):
                                 'state': 'done',
                                 'amount': amount,
                                 'acquirer_reference': str(message_body['Referencia']),
-                                'date_validate': str(current_date.strftime("%Y-%m-%d %H:%M:%S"))
+                                'date_validate':
+                                    str(current_date.strftime("%Y-%m-%d %H:%M:%S"))
                             }
                             result_message['data'] = payment_transaction_vals
                             _logger.info(result_message)
@@ -314,7 +312,9 @@ class PaymentTransaction(models.Model):
                             item = items[0]
                             item.write(payment_transaction_vals)
                             # borraremos todos en borrador que quedaran
-                            items_need_remove = self.env['payment.transaction'].sudo().search(
+                            items_need_remove = self.env[
+                                'payment.transaction'
+                            ].sudo().search(
                                 [
                                     ('state', '=', 'draft'),
                                     ('reference', '=', str(reference)),
@@ -333,7 +333,8 @@ class PaymentTransaction(models.Model):
                                          'con esa referencia, ¿No estara ya validado?'
                             }
                             # action_payment_transaction_done_error
-                            super(PaymentTransaction, self).action_payment_transaction_done_error({
+                            super(PaymentTransaction, self).\
+                                action_payment_transaction_done_error({
                                 'error': result_message['return_body']['error'],
                                 'reference': str(reference),
                                 'acquirer_id_name': 'Ceca',

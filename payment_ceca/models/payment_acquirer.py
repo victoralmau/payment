@@ -145,6 +145,7 @@ class PaymentAcquirer(models.Model):
     def ceca_get_form_action_url(self):
         return self._get_ceca_urls(self.environment)['ceca_form_url']
 
-    @api.one
+    @api.multi
     def action_confirm_amount(self):
+        self.ensure_one()
         _logger.info('action_confirm_amount')
