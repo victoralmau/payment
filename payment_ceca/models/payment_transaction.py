@@ -50,12 +50,11 @@ class PaymentTransaction(models.Model):
         test_env = http.request.session.get('test_enable', False)
         if not reference or not pay_id or not shasign:
             if not test_env:
-                msg = _('Ceca: received data with reference (%s), pay_id (%s), shashign (%s)') \
-                      % (
-                          reference,
-                          pay_id,
-                          shasign
-                      )
+                msg = _('Ceca data: reference (%s), pay_id (%s), shashign (%s)') % (
+                    reference,
+                    pay_id,
+                    shasign
+                )
                 _logger.info(msg)
                 raise ValidationError(msg)
             http.OpenERPSession.tx_error = True
@@ -335,10 +334,10 @@ class PaymentTransaction(models.Model):
                             # action_payment_transaction_done_error
                             super(PaymentTransaction, self).\
                                 action_payment_transaction_done_error({
-                                'error': result_message['return_body']['error'],
-                                'reference': str(reference),
-                                'acquirer_id_name': 'Ceca',
-                            })
+                                    'error': result_message['return_body']['error'],
+                                    'reference': str(reference),
+                                    'acquirer_id_name': 'Ceca',
+                                })
                         # remove_message
                         if result_message['statusCode'] == 200:
                             sqs.delete_message(
