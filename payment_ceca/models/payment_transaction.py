@@ -12,10 +12,10 @@ from odoo import http
 import pytz
 
 import boto3
-from botocore.exceptions import ClientError
 
 import logging
 _logger = logging.getLogger(__name__)
+
 
 class PaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
@@ -49,14 +49,14 @@ class PaymentTransaction(models.Model):
         shasign = data.get('Ds_Signature', '').replace('_', '/').replace('-', '+')
         test_env = http.request.session.get('test_enable', False)
         if not reference or not pay_id or not shasign:
-            error_msg = _('Ceca: received data with missing reference (%s) '
-                          'or pay_id (%s) or shashign (%s)') \
-                        % (
-                            reference,
-                            pay_id,
-                            shasign
-                        )
             if not test_env:
+                error_msg = _('Ceca: received data with missing reference (%s) '
+                              'or pay_id (%s) or shashign (%s)') \
+                            % (
+                                reference,
+                                pay_id,
+                                shasign
+                            )
                 _logger.info(error_msg)
                 raise ValidationError(error_msg)
             http.OpenERPSession.tx_error = True
@@ -96,7 +96,8 @@ class PaymentTransaction(models.Model):
         invalid_parameters = []
         test_env = http.request.session.get('test_enable', False)
         parameters_dic = self.merchant_params_json2dict(data)
-        if (self.acquirer_reference and parameters_dic.get('Ds_Order')) != self.acquirer_reference:
+        if (self.acquirer_reference
+            and parameters_dic.get('Ds_Order')) != self.acquirer_reference:
             invalid_parameters.append(
                 (
                     'Transaction Id',
@@ -105,8 +106,21 @@ class PaymentTransaction(models.Model):
                 )
             )
         # check what is buyed
-        if (float_compare(float(parameters_dic.get('Ds_Amount', '0.0')) / 100, self.amount, 2) != 0):
-            invalid_parameters.append(('Amount', parameters_dic.get('Ds_Amount'), '%.2f' % self.amount))
+        if (
+                float_compare(
+                    float(
+                        parameters_dic.get('Ds_Amount', '0.0')) / 100,
+                    self.amount,
+                    2
+                ) != 0
+        ):
+            invalid_parameters.append(
+                (
+                    'Amount',
+                    parameters_dic.get('Ds_Amount'),
+                    '%.2f' % self.amount
+                )
+            )
         if invalid_parameters and test_env:
             return []
         return invalid_parameters

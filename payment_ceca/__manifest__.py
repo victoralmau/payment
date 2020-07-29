@@ -8,8 +8,8 @@
     "author": "Odoo Nodriza Tech (ONT), "
               "Odoo Community Association (OCA)",
     "license": "AGPL-3",
-    'external_dependencies': {
-        'python3': ['boto3'],
+    "external_dependencies": {
+        "python": ["boto3"],
     },
     "depends": ["website_sale_management"],
     "data": [
@@ -20,4 +20,3 @@
     ],
     "installable": True
 }
-

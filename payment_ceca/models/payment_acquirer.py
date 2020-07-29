@@ -2,10 +2,11 @@
 import hashlib
 from datetime import datetime
 
-from odoo import models, fields, api, tools
+from odoo import models, fields, api
 
 import logging
 _logger = logging.getLogger(__name__)
+
 
 class PaymentAcquirer(models.Model):
     _inherit = 'payment.acquirer'
@@ -57,13 +58,13 @@ class PaymentAcquirer(models.Model):
     @api.model
     def _get_website_url(self):
         return self.env['ir.config_parameter'].get_param('web.base.url')
-      
+
     @api.multi
     def ceca_form_generate_values(self, values):
         self.ensure_one()
-        ceca_values = dict(values)                        
+        ceca_values = dict(values)
         # vars
-        base_url = self._get_website_url()                        
+        base_url = self._get_website_url()
         urltpv = self._get_ceca_urls(self.environment)['ceca_form_url']
         MerchantID = str(self.ceca_merchant_id)
         AcquirerBIN = str(self.ceca_acquirer_bin)
@@ -85,7 +86,7 @@ class PaymentAcquirer(models.Model):
         Importe = str(amount_split[0])+str(amount_split[1])
         # Fix ad 0 final
         if len(amount_split[1]) == 1:
-            Importe = str(Importe)+'0'        
+            Importe = str(Importe)+'0'
         # others
         Idioma = 1
         Pago_soportado = 'SSL'
@@ -93,9 +94,9 @@ class PaymentAcquirer(models.Model):
         # get_order_id
         if Num_operacion == '/':
             return_url = str(values['return_url'])
-            return_url = return_url.replace('/quote/', '')            
+            return_url = return_url.replace('/quote/', '')
             return_url_split = return_url.split('/')
-            
+
             sale_order_ids = self.env['sale.order'].search(
                 [
                     ('id', '=', str(return_url_split[0]))
@@ -130,20 +131,20 @@ class PaymentAcquirer(models.Model):
             'tipomoneda': TipoMoneda,
             'url_ok': url_ok,
             'url_nok': url_nok,
-            'num_operacion': Num_operacion,            
+            'num_operacion': Num_operacion,
             'importe': Importe,
             'idioma': Idioma,
             'pago_soportado': Pago_soportado,
             'descripcion': values['reference'],
             'firma': Firma,
             'cifrado': Cifrado
-        })        
-        return ceca_values        
+        })
+        return ceca_values
 
     @api.multi
     def ceca_get_form_action_url(self):
         return self._get_ceca_urls(self.environment)['ceca_form_url']
-    
+
     @api.one
     def action_confirm_amount(self):
         _logger.info('action_confirm_amount')
