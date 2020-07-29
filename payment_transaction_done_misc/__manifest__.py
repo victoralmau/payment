@@ -16,5 +16,5 @@
     "data": [
         "views/payment_acquirer_views.xml",
     ],
-    "installable": True,
+    "installable": True
 }

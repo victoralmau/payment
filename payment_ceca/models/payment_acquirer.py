@@ -22,14 +22,37 @@ class PaymentAcquirer(models.Model):
                 'https://tpv.ceca.es/tpvweb/tpv/compra.action'
             }
 
-    provider = fields.Selection(selection_add=[('ceca', 'Ceca')])
-    ceca_acquirer_bin = fields.Char('Ceca Acquirer Bin', required_if_provider='ceca')
-    ceca_merchant_id = fields.Char('Ceca Merchant Id', required_if_provider='ceca')
-    ceca_terminal_id = fields.Char('Ceca Terminal Id', required_if_provider='ceca')
-    ceca_business_name = fields.Char('Ceca Business Name', required_if_provider='ceca')
-    ceca_encriptation_key = fields.Char('Ceca Encriptation Key', required_if_provider='ceca')
-    ceca_exponente = fields.Char('Ceca Exponente', required_if_provider='ceca')
-    ceca_tipo_moneda = fields.Char('Ceca Tipo Moneda', required_if_provider='ceca')    
+    provider = fields.Selection(
+        selection_add=[('ceca', 'Ceca')]
+    )
+    ceca_acquirer_bin = fields.Char(
+        string='Ceca Acquirer Bin',
+        required_if_provider='ceca'
+    )
+    ceca_merchant_id = fields.Char(
+        string='Ceca Merchant Id',
+        required_if_provider='ceca'
+    )
+    ceca_terminal_id = fields.Char(
+        string='Ceca Terminal Id',
+        required_if_provider='ceca'
+    )
+    ceca_business_name = fields.Char(
+        string='Ceca Business Name',
+        required_if_provider='ceca'
+    )
+    ceca_encriptation_key = fields.Char(
+        string='Ceca Encriptation Key',
+        required_if_provider='ceca'
+    )
+    ceca_exponente = fields.Char(
+        string='Ceca Exponente',
+        required_if_provider='ceca'
+    )
+    ceca_tipo_moneda = fields.Char(
+        string='Ceca Tipo Moneda',
+        required_if_provider='ceca'
+    )
 
     @api.model
     def _get_website_url(self):
@@ -46,11 +69,16 @@ class PaymentAcquirer(models.Model):
         AcquirerBIN = str(self.ceca_acquirer_bin)
         TerminalID = str(self.ceca_terminal_id)
         Exponente = str(self.ceca_exponente)
-        TipoMoneda = str(self.ceca_tipo_moneda)        
-        # url_ok = str(base_url)+'/payment/ceca/ok'
-        # url_nok = str(base_url)+'/payment/ceca/ko'
+        TipoMoneda = str(self.ceca_tipo_moneda)
         url_ok = str(base_url)+values['return_url']+'?payment_ok=1'
-        url_nok = str(base_url)+values['return_url']+'?payment_ko=1'
+        url_ok = "%s%s?payment_ok=1" % (
+            base_url,
+            values['return_url']
+        )
+        url_nok = "%s%s?payment_ko=1" % (
+            base_url,
+            values['return_url']
+        )
         Num_operacion = values['reference']
         # importe
         amount_split = str(values['amount']).split('.')
@@ -68,12 +96,15 @@ class PaymentAcquirer(models.Model):
             return_url = return_url.replace('/quote/', '')            
             return_url_split = return_url.split('/')
             
-            sale_order_ids = self.env['sale.order'].search([('id', '=', str(return_url_split[0]))])
+            sale_order_ids = self.env['sale.order'].search(
+                [
+                    ('id', '=', str(return_url_split[0]))
+                ]
+            )
             if sale_order_ids:
-                sale_order_id = sale_order_ids[0]
-                Num_operacion = sale_order_id.name
+                Num_operacion = sale_order_ids[0].name
         # Num_operacion
-        Num_operacion += '-'+str(datetime.today().strftime("%H_%I_%S"))                                        
+        Num_operacion += '-'+str(datetime.today().strftime("%H_%I_%S"))
         # clave
         Clave = str(self.ceca_encriptation_key)
         string_to_sign = '%s%s%s%s%s%s%s%s%s%s%s' % (
@@ -89,8 +120,7 @@ class PaymentAcquirer(models.Model):
             url_ok,
             url_nok
         )
-        Firma = hashlib.sha256(string_to_sign.encode()).hexdigest()                
-
+        Firma = hashlib.sha256(string_to_sign.encode()).hexdigest()
         ceca_values.update({
             'urltpv': urltpv,
             'merchantid': MerchantID,
