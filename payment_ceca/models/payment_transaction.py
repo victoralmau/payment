@@ -34,10 +34,6 @@ class PaymentTransaction(models.Model):
         parameters = data.get('Ds_MerchantParameters', '').decode('base64')
         return json.loads(parameters)
 
-    # --------------------------------------------------
-    # FORM RELATED METHODS
-    # --------------------------------------------------
-
     @api.model
     def _ceca_form_get_tx_from_data(self, data):
         """ Given a data dict coming from ceca, verify it and
