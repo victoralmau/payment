@@ -8,10 +8,8 @@ Adicionalmente, con el addon account_arelux  y el parámetro payment_transaction
 
  
 ## odoo.conf
-```
-#payment_ceca
-sqs_payment_transaction_ceca_url=https://sqs.eu-west-1.amazonaws.com/381857310472/arelux-odoo_dev-command-payment-transaction-ceca
-```
+- #payment_ceca
+- sqs_payment_transaction_ceca_url=https://sqs.eu-west-1.amazonaws.com/381857310472/arelux-odoo_dev-command-payment-transaction-ceca
 
 Es imprescindible que la Regla de registro en Odoo “Access own payment transaction only” esté inactiva puesto que de lo contrario, solo podríamos encontrar transacciones de clientes con el comercial de webservice. > Probablemente al funcionar por SQS esto ya no sea necesario.
 
